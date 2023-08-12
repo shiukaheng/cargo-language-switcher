@@ -1,0 +1,108 @@
+<!-- Cargo language switcher -->
+<script>
+    // Define the default and all languages
+    var defaultLanguage = 'en';
+    var allLanguages = [defaultLanguage, 'el']; // Add more languages as needed
+
+    // First create stylesheet and add to head
+    var style = document.createElement('style');
+    style.appendChild(document.createTextNode(''));
+    document.head.appendChild(style);
+
+    function applyLanguage(language) {
+        // Clear stylesheet
+        style.innerHTML = '';
+        // For all languages except the one specified, hide the content
+        allLanguages.forEach(function(lang) {
+            if (lang !== language) {
+                style.innerHTML += '.content-' + lang + ' { display: none; }';
+            }
+        });
+    }
+
+     // Get language from URL
+    function getLanguage() {
+        var language = window.location.hash.substring(1) || defaultLanguage;
+        return language;
+    }
+
+    function getLanguageToSwitchTo(currentLanguage) {
+        var language = currentLanguage || getLanguage();
+        var currentIndex = allLanguages.indexOf(language);
+        var nextIndex = (currentIndex + 1) % allLanguages.length; // Cycle through the languages
+        return allLanguages[nextIndex];
+    }
+
+    // Mount language switcher
+    function changeLanguageUrl(language) {
+        // Add "#<language>" to URL by pushing state
+        window.history.pushState({}, '', '#' + language);
+    }
+
+    function hookLanguageSwitcher() {
+        var languageSwitcher = document.getElementById('language-switcher');
+        // Handle onclick event
+        languageSwitcher.onclick = function() {
+            console.log("Language switcher clicked");
+            // Switch language
+            var languageToSwitchTo = getLanguageToSwitchTo();
+            changeLanguageUrl(languageToSwitchTo);
+            onPageUpdate();
+        };
+    }
+    
+    // Create a onPageUpdate function to be called when the page is updated
+    function onPageUpdate() {
+        var language = getLanguage();
+        applyLanguage(language);
+        hookLanguageSwitcher();
+        // Update language switcher text
+        var languageToSwitchTo = getLanguageToSwitchTo();
+        var languageSwitcher = document.getElementById('language-switcher');
+        languageSwitcher.innerHTML = '+' + languageToSwitchTo.toUpperCase();
+    }
+
+    // Create a function to remove the stylesheet so it disables the language switcher
+    function disableLanguageSwitcher() {
+        style.innerHTML = '';
+    }
+
+    if (!window.location.href.includes('cargo.site/admin')) {
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log("Page loaded");
+        
+            // Trigger onPageUpdate when the page is loaded
+            onPageUpdate();
+        
+            // Override pushState to update the language when the URL changes
+            window.history.pushState = new Proxy(window.history.pushState, {
+            apply: (target, thisArg, argArray) => {
+                // Get the active language
+                var language = getLanguage();
+                console.log(`Pushing state with language ${language}`)
+                onPageUpdate();
+                return target.apply(thisArg, argArray);
+            },
+            });
+        });
+    }
+
+    // Expose applyLanguage function
+    window.applyLanguage = applyLanguage;
+    window.disableLanguageSwitcher = disableLanguageSwitcher;
+    
+</script>
+<style>
+    #language-switcher {
+    cursor: pointer; /* Makes the cursor appear clickable */
+    user-select: none; /* Prevents text selection in most modern browsers */
+    -webkit-user-select: none; /* Prevents text selection in Safari */
+    -moz-user-select: none; /* Prevents text selection in Firefox */
+    -ms-user-select: none; /* Prevents text selection in Internet Explorer */
+}
+
+    .hidden {
+    display: none !important;
+    }
+</style>
+<!-- Cargo language switcher -->
