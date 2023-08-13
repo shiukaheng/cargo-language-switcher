@@ -1,6 +1,6 @@
 # Usage guide
 ## Setting up the script
-- Copy and paste "page.html" script and CSS snippet to "Design > HTML" section. This should make it work on all pages.
+- Copy and paste the ["page.html"](https://github.com/shiukaheng/cargo-language-switcher/blob/main/page.html) script and CSS snippet to "Design > HTML" section. This should make it work on all pages.
 - Make a list of language strings you will use, and choose a default language. In our case, we have "en" and "el". Lets say we want "en" to be the default language. 
 - In the script, modify this section to include your languages:
 ```javascript
