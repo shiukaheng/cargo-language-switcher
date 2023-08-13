@@ -9,7 +9,7 @@
     var allLanguages = [defaultLanguage, 'el'];
 ```
 ## Writing multi-lingual pages
-Create a new page and write the content as usual. For parts that are language specific, wrap them in a div, and add a class "content-<language>". Any div wrapped in this class will be hidden by default, and is only shown when the language is selected.
+Create a new page and write the content as usual. For parts that are language specific, wrap them in a div, and add a class "content-\<language\>". Any div wrapped in this class will be hidden by default, and is only shown when the language is selected.
 
 Example:
 ```html
