@@ -1,4 +1,4 @@
-<!-- Cargo language switcher -->
+<!-- Beginning of Cargo language switcher -->
 <script>
     // Define the language strings
     var defaultLanguage = 'en'; // The default language shown
@@ -18,6 +18,8 @@
                 style.innerHTML += '.content-' + lang + ' { display: none; }';
             }
         });
+        // Force a refresh with Cargo's js
+        window.dispatchEvent(new Event('resize'));
     }
 
      // Get language from URL
@@ -105,4 +107,4 @@
     display: none !important;
     }
 </style>
-<!-- Cargo language switcher -->
+<!-- End of Cargo language switcher -->
