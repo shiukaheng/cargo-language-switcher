@@ -2,7 +2,8 @@
 <script>
     // Define the language strings
     var defaultLanguage = 'en'; // The default language shown
-    var appIdentifier = 'project'; // The identifier of the app to store the language in localStorage
+    var allLanguages = [defaultLanguage, 'el'];
+    var appIdentifier = 'project'; // The identifier of the app to store the language in localStorage. Modify this if you have multiple Cargo apps on the same domain.
 
     function getCurrentLanguage() {
         var localStorageLanguage = localStorage.getItem('language-' + appIdentifier);
@@ -12,8 +13,6 @@
     function setCurrentLanguage(language) {
         localStorage.setItem('language-' + appIdentifier, language);
     }
-
-    var allLanguages = [getCurrentLanguage(), 'el'];
 
     // First create stylesheet and add to head
     var style = document.createElement('style');
