@@ -3,11 +3,11 @@ Cargo Language Switcher provides an easy solution for adding multi-language supp
 ## Setting up the script
 - Copy and paste the ["page.html"](https://github.com/shiukaheng/cargo-language-switcher/blob/main/page.html) script and CSS snippet to "Design > HTML" section. This should make it work on all pages.
 - Make a list of language strings you will use, and choose a default language. In our case, we have "en" and "el". Lets say we want "en" to be the default language. These language strings are arbritrary, just make sure you are using them consistently.
-- In the script, modify this section to include your language string:
+- In the script, modify this section to include your language string, and to give your website a unique appIdentifier (if your website lives on the same domain as other cargo sites that use this script)
 ```javascript
-    // Define the language strings
     var defaultLanguage = 'en'; // The default language shown
-    var allLanguages = [defaultLanguage, 'el']; // Add more languages as needed
+    var allLanguages = [defaultLanguage, 'el'];
+    var appIdentifier = 'project'; // The identifier of the app to store the language in localStorage. Modify this if you have multiple Cargo apps on the same domain.
 ```
 ## Writing multi-lingual pages
 Create a new page and write the content as usual. For parts that are language specific, wrap them in a div, and add a class "content-\<language string\>". Any div wrapped in this class will be hidden by default, and is only shown when the language is selected.
