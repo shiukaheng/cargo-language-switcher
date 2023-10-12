@@ -2,7 +2,20 @@
 <script>
     // Define the language strings
     var defaultLanguage = 'en'; // The default language shown
-    var allLanguages = [defaultLanguage, 'el']; // Add more languages as needed
+    var appIdentifier = 'project'; // The identifier of the app to store the language in localStorage (in case you have multiple apps on the same domain)
+
+    function getDefaultLanguage() {
+        // Try to get the language from localStorage
+        var localStorageLanguage = localStorage.getItem('language-' + appIdentifier);
+        return localStorageLanguage || defaultLanguage;
+    }
+
+    function setDefaultLanguage(language) {
+        // Set the language in localStorage
+        localStorage.setItem('language-' + appIdentifier, language);
+    }
+
+    var allLanguages = [getDefaultLanguage(), 'el']; // Add more languages as needed
 
     // First create stylesheet and add to head
     var style = document.createElement('style');
@@ -18,18 +31,20 @@
                 style.innerHTML += '.content-' + lang + ' { display: none; }';
             }
         });
+        // Set the new language as the default
+        setDefaultLanguage(language);
         // Force a refresh with Cargo's js
         window.dispatchEvent(new Event('resize'));
     }
 
      // Get language from URL
-    function getLanguage() {
-        var language = window.location.hash.substring(1) || defaultLanguage;
+    function getLanguageFromURL() {
+        var language = window.location.hash.substring(1) || getDefaultLanguage();
         return language;
     }
 
     function getLanguageToSwitchTo(currentLanguage) {
-        var language = currentLanguage || getLanguage();
+        var language = currentLanguage || getLanguageFromURL();
         var currentIndex = allLanguages.indexOf(language);
         var nextIndex = (currentIndex + 1) % allLanguages.length; // Cycle through the languages
         return allLanguages[nextIndex];
@@ -55,7 +70,7 @@
     
     // Create a onPageUpdate function to be called when the page is updated
     function onPageUpdate() {
-        var language = getLanguage();
+        var language = getLanguageFromURL();
         applyLanguage(language);
         hookLanguageSwitcher();
         // Update language switcher text
@@ -80,7 +95,7 @@
             window.history.pushState = new Proxy(window.history.pushState, {
             apply: (target, thisArg, argArray) => {
                 // Get the active language
-                var language = getLanguage();
+                var language = getLanguageFromURL();
                 console.log(`Pushing state with language ${language}`)
                 onPageUpdate();
                 return target.apply(thisArg, argArray);
