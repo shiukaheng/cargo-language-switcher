@@ -24,7 +24,7 @@ Example:
 Create an HTML element without text. You can style it however you want. Add an id "language-switcher" to it. This button can then be used to cycle through the languages.
 
 ## Behaviour
-- When someone first visits your website, they'll see the page in your "default" language (like English or "en").
+- When someone first visits your website, they'll see the page in your "default" language (like English or "en"), specified in the top section of the script.
 - If they click on the language button, the page will switch to the next available language. The website will remember this choice for their future visits.
 - If you've written parts of your page in only one language, remember to put them inside those special boxes (called 'divs'). If you skip this step, the language switch button can't change those parts.
 - On pages with the address containing 'cargo.site/admin', the language button won't work. This is to keep things safe and unchanged on those pages.
