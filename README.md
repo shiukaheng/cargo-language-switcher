@@ -1,3 +1,4 @@
+Cargo Language Switcher provides an easy solution for adding multi-language support to websites built with Cargo. While Cargo is a versatile website builder, it lacks built-in multi-language features. This tool bridges that gap, enabling designers to cater to a global audience without the technical complexities.
 # Usage guide
 ## Setting up the script
 - Copy and paste the ["page.html"](https://github.com/shiukaheng/cargo-language-switcher/blob/main/page.html) script and CSS snippet to "Design > HTML" section. This should make it work on all pages.
