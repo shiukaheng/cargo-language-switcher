@@ -26,7 +26,6 @@
                 style.innerHTML += '.content-' + lang + ' { display: none; }';
             }
         });
-        setCurrentLanguage(language);
         window.dispatchEvent(new Event('resize'));
     }
 
@@ -42,6 +41,7 @@
         if (languageSwitcher) { // Null check added here
             languageSwitcher.onclick = function() {
                 var languageToSwitchTo = getLanguageToSwitchTo();
+                setCurrentLanguage(languageToSwitchTo);
                 applyLanguage(languageToSwitchTo);
                 onPageUpdate();
             };
