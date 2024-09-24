@@ -1,89 +1,79 @@
-<!-- Beginning of Cargo language switcher -->
-<script>
-    // Define the language strings
-    var defaultLanguage = 'en'; // The default language shown
-    var allLanguages = [defaultLanguage, 'el'];
-    var appIdentifier = 'project'; // The identifier of the app to store the language in localStorage. Modify this if you have multiple Cargo apps on the same domain.
+// Define the language strings
+var defaultLanguage = 'en'; // The default language shown
+var allLanguages = [defaultLanguage, 'el'];
+var appIdentifier = 'project'; // The identifier of the app to store the language in localStorage. Modify this if you have multiple Cargo apps on the same domain.
 
-    function getCurrentLanguage() {
-        var localStorageLanguage = localStorage.getItem('language-' + appIdentifier);
-        return localStorageLanguage || defaultLanguage;
-    }
+// New: Define language display strings
+var languageDisplayStrings = {
+    'en': 'EN',
+    'el': 'ΕΛ'
+};
 
-    function setCurrentLanguage(language) {
-        localStorage.setItem('language-' + appIdentifier, language);
-    }
+function getCurrentLanguage() {
+    var localStorageLanguage = localStorage.getItem('language-' + appIdentifier);
+    return localStorageLanguage || defaultLanguage;
+}
 
-    // First create stylesheet and add to head
-    var style = document.createElement('style');
-    style.appendChild(document.createTextNode(''));
-    document.head.appendChild(style);
+function setCurrentLanguage(language) {
+    localStorage.setItem('language-' + appIdentifier, language);
+}
 
-    function applyLanguage(language) {
-        style.innerHTML = '';
-        allLanguages.forEach(function(lang) {
-            if (lang !== language) {
-                style.innerHTML += '.content-' + lang + ' { display: none; }';
-            }
-        });
-        window.dispatchEvent(new Event('resize'));
-    }
+// First create stylesheet and add to head
+var style = document.createElement('style');
+style.appendChild(document.createTextNode(''));
+document.head.appendChild(style);
 
-    function getLanguageToSwitchTo(currentLanguage) {
-        var language = currentLanguage || getCurrentLanguage();
-        var currentIndex = allLanguages.indexOf(language);
-        var nextIndex = (currentIndex + 1) % allLanguages.length; 
-        return allLanguages[nextIndex];
-    }
-
-    function hookLanguageSwitcher() {
-        var languageSwitcher = document.getElementById('language-switcher');
-        if (languageSwitcher) { // Null check added here
-            languageSwitcher.onclick = function() {
-                var languageToSwitchTo = getLanguageToSwitchTo();
-                setCurrentLanguage(languageToSwitchTo);
-                applyLanguage(languageToSwitchTo);
-                onPageUpdate();
-            };
+function applyLanguage(language) {
+    style.innerHTML = '';
+    allLanguages.forEach(function(lang) {
+        if (lang !== language) {
+            style.innerHTML += '.content-' + lang + ' { display: none; }';
         }
-    }
+    });
+    window.dispatchEvent(new Event('resize'));
+}
 
-    function onPageUpdate() {
-        var language = getCurrentLanguage();
-        applyLanguage(language);
-        hookLanguageSwitcher();
-        var languageSwitcher = document.getElementById('language-switcher');
-        if (languageSwitcher) { // Null check added here
+function getLanguageToSwitchTo(currentLanguage) {
+    var language = currentLanguage || getCurrentLanguage();
+    var currentIndex = allLanguages.indexOf(language);
+    var nextIndex = (currentIndex + 1) % allLanguages.length; 
+    return allLanguages[nextIndex];
+}
+
+function hookLanguageSwitcher() {
+    var languageSwitcher = document.getElementById('language-switcher');
+    if (languageSwitcher) {
+        languageSwitcher.onclick = function() {
             var languageToSwitchTo = getLanguageToSwitchTo();
-            languageSwitcher.innerHTML = '+' + languageToSwitchTo.toUpperCase();
-        }
-    }
-
-    function disableLanguageSwitcher() {
-        style.innerHTML = '';
-    }
-
-    if (!window.location.href.includes('cargo.site/admin')) {
-        document.addEventListener('DOMContentLoaded', function() {
+            setCurrentLanguage(languageToSwitchTo);
+            applyLanguage(languageToSwitchTo);
             onPageUpdate();
-        });
+        };
     }
+}
 
-    // Expose applyLanguage function
-    window.applyLanguage = applyLanguage;
-    window.disableLanguageSwitcher = disableLanguageSwitcher;
-</script>
-<style>
-    #language-switcher {
-        cursor: pointer;
-        user-select: none;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
+function onPageUpdate() {
+    var language = getCurrentLanguage();
+    applyLanguage(language);
+    hookLanguageSwitcher();
+    var languageSwitcher = document.getElementById('language-switcher');
+    if (languageSwitcher) {
+        var languageToSwitchTo = getLanguageToSwitchTo();
+        // Updated: Use the display string for the language
+        languageSwitcher.innerHTML = '+' + (languageDisplayStrings[languageToSwitchTo] || languageToSwitchTo.toUpperCase());
     }
+}
 
-    .hidden {
-        display: none !important;
-    }
-</style>
-<!-- End of Cargo language switcher -->
+function disableLanguageSwitcher() {
+    style.innerHTML = '';
+}
+
+if (!window.location.href.includes('cargo.site/admin')) {
+    document.addEventListener('DOMContentLoaded', function() {
+        onPageUpdate();
+    });
+}
+
+// Expose applyLanguage function
+window.applyLanguage = applyLanguage;
+window.disableLanguageSwitcher = disableLanguageSwitcher;
