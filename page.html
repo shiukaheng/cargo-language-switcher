@@ -1,79 +1,96 @@
-// Define the language strings
-var defaultLanguage = 'en'; // The default language shown
-var allLanguages = [defaultLanguage, 'el'];
-var appIdentifier = 'project'; // The identifier of the app to store the language in localStorage. Modify this if you have multiple Cargo apps on the same domain.
+<!-- Beginning of Cargo language switcher -->
+<script>
+    // Define the language strings
+    var defaultLanguage = 'en'; // The default language shown
+    var allLanguages = [defaultLanguage, 'el'];
+    var appIdentifier = 'project'; // The identifier of the app to store the language in localStorage. Modify this if you have multiple Cargo apps on the same domain.
 
-// New: Define language display strings
-var languageDisplayStrings = {
-    'en': 'EN',
-    'el': 'ΕΛ'
-};
+    // New: Define language display strings
+    var languageDisplayStrings = {
+        'en': 'EN',
+        'el': 'ΕΛ'
+    };
 
-function getCurrentLanguage() {
-    var localStorageLanguage = localStorage.getItem('language-' + appIdentifier);
-    return localStorageLanguage || defaultLanguage;
-}
+    function getCurrentLanguage() {
+        var localStorageLanguage = localStorage.getItem('language-' + appIdentifier);
+        return localStorageLanguage || defaultLanguage;
+    }
 
-function setCurrentLanguage(language) {
-    localStorage.setItem('language-' + appIdentifier, language);
-}
+    function setCurrentLanguage(language) {
+        localStorage.setItem('language-' + appIdentifier, language);
+    }
 
-// First create stylesheet and add to head
-var style = document.createElement('style');
-style.appendChild(document.createTextNode(''));
-document.head.appendChild(style);
+    // First create stylesheet and add to head
+    var style = document.createElement('style');
+    style.appendChild(document.createTextNode(''));
+    document.head.appendChild(style);
 
-function applyLanguage(language) {
-    style.innerHTML = '';
-    allLanguages.forEach(function(lang) {
-        if (lang !== language) {
-            style.innerHTML += '.content-' + lang + ' { display: none; }';
+    function applyLanguage(language) {
+        style.innerHTML = '';
+        allLanguages.forEach(function(lang) {
+            if (lang !== language) {
+                style.innerHTML += '.content-' + lang + ' { display: none; }';
+            }
+        });
+        window.dispatchEvent(new Event('resize'));
+    }
+
+    function getLanguageToSwitchTo(currentLanguage) {
+        var language = currentLanguage || getCurrentLanguage();
+        var currentIndex = allLanguages.indexOf(language);
+        var nextIndex = (currentIndex + 1) % allLanguages.length; 
+        return allLanguages[nextIndex];
+    }
+
+    function hookLanguageSwitcher() {
+        var languageSwitcher = document.getElementById('language-switcher');
+        if (languageSwitcher) {
+            languageSwitcher.onclick = function() {
+                var languageToSwitchTo = getLanguageToSwitchTo();
+                setCurrentLanguage(languageToSwitchTo);
+                applyLanguage(languageToSwitchTo);
+                onPageUpdate();
+            };
         }
-    });
-    window.dispatchEvent(new Event('resize'));
-}
+    }
 
-function getLanguageToSwitchTo(currentLanguage) {
-    var language = currentLanguage || getCurrentLanguage();
-    var currentIndex = allLanguages.indexOf(language);
-    var nextIndex = (currentIndex + 1) % allLanguages.length; 
-    return allLanguages[nextIndex];
-}
-
-function hookLanguageSwitcher() {
-    var languageSwitcher = document.getElementById('language-switcher');
-    if (languageSwitcher) {
-        languageSwitcher.onclick = function() {
+    function onPageUpdate() {
+        var language = getCurrentLanguage();
+        applyLanguage(language);
+        hookLanguageSwitcher();
+        var languageSwitcher = document.getElementById('language-switcher');
+        if (languageSwitcher) {
             var languageToSwitchTo = getLanguageToSwitchTo();
-            setCurrentLanguage(languageToSwitchTo);
-            applyLanguage(languageToSwitchTo);
+            // Updated: Use the display string for the language
+            languageSwitcher.innerHTML = '+' + (languageDisplayStrings[languageToSwitchTo] || languageToSwitchTo.toUpperCase());
+        }
+    }
+
+    function disableLanguageSwitcher() {
+        style.innerHTML = '';
+    }
+
+    if (!window.location.href.includes('cargo.site/admin')) {
+        document.addEventListener('DOMContentLoaded', function() {
             onPageUpdate();
-        };
+        });
     }
-}
 
-function onPageUpdate() {
-    var language = getCurrentLanguage();
-    applyLanguage(language);
-    hookLanguageSwitcher();
-    var languageSwitcher = document.getElementById('language-switcher');
-    if (languageSwitcher) {
-        var languageToSwitchTo = getLanguageToSwitchTo();
-        // Updated: Use the display string for the language
-        languageSwitcher.innerHTML = '+' + (languageDisplayStrings[languageToSwitchTo] || languageToSwitchTo.toUpperCase());
+    // Expose applyLanguage function
+    window.applyLanguage = applyLanguage;
+    window.disableLanguageSwitcher = disableLanguageSwitcher;
+</script>
+<style>
+    #language-switcher {
+        cursor: pointer;
+        user-select: none;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
     }
-}
 
-function disableLanguageSwitcher() {
-    style.innerHTML = '';
-}
-
-if (!window.location.href.includes('cargo.site/admin')) {
-    document.addEventListener('DOMContentLoaded', function() {
-        onPageUpdate();
-    });
-}
-
-// Expose applyLanguage function
-window.applyLanguage = applyLanguage;
-window.disableLanguageSwitcher = disableLanguageSwitcher;
+    .hidden {
+        display: none !important;
+    }
+</style>
+<!-- End of Cargo language switcher -->
